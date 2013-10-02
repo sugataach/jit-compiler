@@ -180,6 +180,16 @@ src = '5+6*(8-1)/2-5'
 
 list(lex(src))
 
+# <headingcell level=2>
+
+# Skipping Whitespace
+
+# <codecell>
+
+def lex_skip_whitespace(text):
+    for token in lex_raw(tex):
+        pass
+
 # <codecell>
 
 
