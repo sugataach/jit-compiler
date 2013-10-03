@@ -187,8 +187,18 @@ list(lex(src))
 # <codecell>
 
 def lex_skip_whitespace(text):
-    for token in lex_raw(tex):
-        pass
+    for token in lex_raw(text):
+        if token.type is TokenType.whitespace:
+            continue
+        yield token
+
+# <codecell>
+
+lex = lex_skip_whitespace
+
+# <codecell>
+
+list(lex('3 + 7'))
 
 # <codecell>
 
