@@ -39,13 +39,13 @@ UnaryOpExpression('-', IntegerLiteral(7))
 
 # <codecell>
 
-UnaryOpExpression('-', IntegerLiteral(7).to_dict())
+UnaryOpExpression('-', IntegerLiteral(7)).to_dict()
 
 # <codecell>
 
 class BinaryOpExpression(collections.namedtuple('BinaryOpExpression', ('lhs', 'op', 'rhs'))):
     def to_dict(self):
-        return { 'type': 'BinaryOpExpression', 'lhs': self.lhs, 'op': self.op, 'rhs': self.rhs.to_dict() }
+        return { 'type': 'BinaryOpExpression', 'lhs': self.lhs.to_dict(), 'op': self.op, 'rhs': self.rhs.to_dict() }
 
 # <codecell>
 
