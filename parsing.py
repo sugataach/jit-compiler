@@ -42,10 +42,7 @@ class TokenStack(object):
         self._cursor_stack = []
     
     def peek(self):
-        try:
-            return self._tokens[self._cursor]
-        except IndexError:
-            raise ParseError('Unexpected end of input')
+        return self._tokens[self._cursor]
     
     def pop(self):
         rv = self.peek()
@@ -141,14 +138,18 @@ class PrimaryExpression(ParseBase):
             self.token_stack.push_cursor()
             return parser(self.token_stack).node, True
         except ParseError as err:
+            # print 'ttp', err
             self.token_stack.pop_cursor()
             return None, False
         
     def parse(self):
+        # print 'prim expr parse'
         rv, ok = self.try_to_parse(IntegerLiteralExpression)
+        # print rv,ok
         if ok:
             return rv
         
+        # print 'try unary op'
         rv, ok = self.try_to_parse(UnaryOpExpression)
         if ok:
             return rv
@@ -188,7 +189,7 @@ class BinaryOpExpression(ParseBase):
     def parse_expression_(self, lhs, min_precedence):
         while self.next_is_binary_() and self.precedence_() >= min_precedence:
             op_token = self.token_stack.pop()
-            rhs = PrimaryExpression(self.token_stack)
+            rhs = PrimaryExpression(self.token_stack).node
             while self.next_is_binary_() and self.precedence_() > self.precedence_(op_token):
                 rhs = self.parse_expression_(rhs, self.precedence_())
             lhs = astnodes.BinaryOpExpression(lhs, op_token.value, rhs)
@@ -197,7 +198,7 @@ class BinaryOpExpression(ParseBase):
     def next_is_binary_(self):
         try:
             next_token = self.token_stack.peek()
-        except:
+        except IndexError:
             return False
         return next_token.value in BinaryOpExpression._op_precedence
     
@@ -211,10 +212,12 @@ Expression = BinaryOpExpression
 
 # <codecell>
 
-Expression(TokenStack(lex('-(+52)*1'))).node.to_dict()
+import json
 
 # <codecell>
 
+if __name__ == "__main__":
+    print json.dumps(Expression(TokenStack(lex('4*5+3*(2+1)'))).node.to_dict(), indent=2)
 
 # <codecell>
 
